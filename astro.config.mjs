@@ -4,8 +4,6 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import robotsTxt from 'astro-robots-txt';
-import partytown from '@astrojs/partytown';
-import icon from 'astro-icon';
 import min from 'astro-min';
 import compressor from 'astro-compressor';
 
@@ -61,12 +59,6 @@ Allow: /
 `;
       },
     }),
-    partytown({
-      config: {
-        forward: ['dataLayer.push'],
-      },
-    }),
-    icon(),
     min(),
     compressor(), // Compressor must be last in integrations list
   ],

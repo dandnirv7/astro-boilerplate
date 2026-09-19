@@ -17,7 +17,7 @@ import {
 import { stripExtension } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const articles = await getCollection('articles');
+  const articles = (await getCollection('articles')).filter((a) => !a.data.draft);
   return articles.map((article) => {
     const slug = stripExtension(article.id);
     return {
@@ -139,6 +139,13 @@ const graph = [
       <div class="prose prose-slate lg:prose-lg max-w-none space-y-6 text-slate-700 leading-relaxed">
         <Content />
       </div>
+
+      <!-- Contextual back-link: article detail -> listing (descriptive anchor) -->
+      <nav aria-label="Navigasi artikel" class="mt-10 pt-6 border-t border-slate-200">
+        <a href="/articles/" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+          <span aria-hidden="true">←</span> Kembali ke Artikel &amp; Wawasan
+        </a>
+      </nav>
 
       <!-- In-article Lead WA conversion card -->
       <div class="mt-14 p-8 bg-linear-to-r from-slate-50 to-emerald-50/40 border border-emerald-200 rounded-2xl">

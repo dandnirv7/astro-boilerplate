@@ -7,6 +7,8 @@ const pages = defineCollection({
     title: z.string(),
     description: z.string(),
     publishDate: z.coerce.date().optional(),
+    // Draft pages are never built, listed, or referenced (see sitemap/robots /drafts rules).
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -19,6 +21,8 @@ const articles = defineCollection({
     modifiedDate: z.coerce.date().optional(),
     author: z.string().default('Tim Editorial'),
     tags: z.array(z.string()).default([]),
+    // Draft articles are never built, listed, or referenced.
+    draft: z.boolean().default(false),
   }),
 });
 

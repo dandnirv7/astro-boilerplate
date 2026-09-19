@@ -10,8 +10,8 @@ interface OgPageData {
 }
 
 // Fetch all collections
-const articles = await getCollection('articles');
-const pages = await getCollection('pages');
+const articles = (await getCollection('articles')).filter((a) => !a.data.draft);
+const pages = (await getCollection('pages')).filter((p) => !p.data.draft);
 
 // Key OG = slug hasil ogSlugFromPath (kontrak yang sama dipakai SeoHead).
 // '/tentang-kami/' -> 'tentang-kami' | '/articles/foo/' -> 'articles-foo'

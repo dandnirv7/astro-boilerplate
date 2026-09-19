@@ -30,6 +30,26 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 
 - View-source `/`, satu halaman, satu artikel: canonical absolut, OG image absolut, tepat 1x JSON-LD `@graph`.
 - Rich Results Test + Schema Validator lolos. `pnpm diagnost` bersih. Satu OG PNG dibuka di browser.
+- Yang diverifikasi di sini adalah indexabilitas teknis lokal; indexing/ranking aktual tidak terverifikasi dan tidak dijamin.
+
+## Matriks indexability (perilaku yang dimaksud)
+
+| Tipe halaman | Index | Follow | Sitemap | Canonical | JSON-LD |
+|---|---|---|---|---|---|
+| Halaman publik (`/`, `/tentang-kami/`) | yes | yes | yes | yes | yes (`WebSite`, `Organization`, `WebPage`, `BreadcrumbList`, `FAQPage` bila ada FAQ) |
+| Listing artikel | yes | yes | yes | yes | yes (tanpa `BlogPosting`) |
+| Detail artikel | yes | yes | yes | yes | yes (+ `BlogPosting`) |
+| 404 | no | yes | no | self (`/404/`) | tidak ada |
+| Draft (`draft: true`) | tidak di-build | — | no | — | — |
+
+## Menulis konten yang mudah dikutip (AEO/GEO tanpa hack)
+
+- Satu H1 jelas per halaman; H2/H3 deskriptif.
+- Jawab langsung di awal section (`<h2>Apa itu X?</h2>` + paragraf jawaban ringkas), bukan terkubur di hero copy.
+- Fakta eksplisit: tabel, langkah berurutan, contoh; setiap klaim di JSON-LD harus terlihat di HTML.
+- FAQ dari satu sumber (`src/content/faqs/*.json`) → komponen visible + `FAQPage` otomatis sinkron.
+- Link internal deskriptif (`Kembali ke Artikel & Wawasan`, bukan "klik di sini"); tanpa link farm.
+- Tidak ada jaminan ranking, indexing, sitasi AI, atau visibilitas LLM — fondasi ini hanya membuat konten layak crawl dan layak kutip.
 
 ## Dependensi: trade-off yang disengaja
 

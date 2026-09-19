@@ -12,6 +12,7 @@ export const GET: APIRoute = async () => {
   const base = siteConfig.url.endsWith('/') ? siteConfig.url.slice(0, -1) : siteConfig.url;
 
   const articles = (await getCollection('articles'))
+    .filter((a) => !a.data.draft)
     .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
     .slice(0, 7);
 

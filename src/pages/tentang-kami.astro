@@ -14,7 +14,7 @@ import {
 } from '../lib/schema';
 
 const pageEntry = await findEntry('pages', 'tentang-kami');
-if (!pageEntry) {
+if (!pageEntry || pageEntry.data.draft) {
   return Astro.redirect('/404');
 }
 

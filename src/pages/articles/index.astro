@@ -11,9 +11,9 @@ import {
   buildBreadcrumbSchema,
 } from '../../lib/schema';
 
-const articles = (await getCollection('articles')).sort(
-  (a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()
-);
+const articles = (await getCollection('articles'))
+  .filter((a) => !a.data.draft)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
 const pageTitle = 'Artikel & Wawasan Strategis';
 const pageDescription = 'Kumpulan artikel, analisis mendalam, dan panduan objektif untuk membantu pengambilan keputusan yang tepat.';

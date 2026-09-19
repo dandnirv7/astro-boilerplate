@@ -45,7 +45,7 @@ export const siteConfig: SiteConfig = {
   name: "Boilerplate Astro",
   tagline: "Boilerplate Generik Marketing & Katalog",
   description:
-    "Boilerplate Astro performa tinggi dengan fokus AEO/SEO, structured data JSON-LD @graph valid, dynamic OG canvas, dan lead WhatsApp tanpa asumsi bisnis.",
+    "Boilerplate Astro generik dengan SEO teknis, structured data JSON-LD @graph valid, OG otomatis, dan CTA WhatsApp opsional.",
   locale: "id-ID",
   ogDefault: "/og/default.png",
   contact: {
