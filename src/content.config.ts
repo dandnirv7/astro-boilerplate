@@ -39,8 +39,35 @@ const faqs = defineCollection({
   }),
 });
 
+/**
+ * Generic catalog collection (domain-neutral: NOT "products").
+ * Only identity is required; every business attribute is optional.
+ * `image` uses Astro's image helper so entries resolve to optimized metadata.
+ */
+const catalog = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/catalog' }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string(),
+      description: z.string().optional(),
+      category: z.string().optional(),
+      price: z
+        .object({
+          amount: z.number(),
+          currency: z.string().default('IDR'),
+        })
+        .optional(),
+      available: z.boolean().optional(),
+      image: image().optional(),
+      gallery: z.array(image()).default([]),
+      // Draft items are never built, listed, or referenced.
+      draft: z.boolean().default(false),
+    }),
+});
+
 export const collections = {
   pages,
   articles,
   faqs,
+  catalog,
 };

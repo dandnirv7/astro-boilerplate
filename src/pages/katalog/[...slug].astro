@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import {
+  CatalogGallery,
+  CatalogGrid,
+  buildProductSchema,
+  entryToCatalogItem,
+  formatPrice,
+} from '../../capabilities/catalog/index.js';
+import { relatedItems } from '../../capabilities/search/index.js';
+import { resolveCanonical } from '../../lib/seo';
+import { stripExtension } from '../../lib/content';
+import {
+  buildWebSiteSchema,
+  buildOrganizationSchema,
+  buildWebPageSchema,
+  buildBreadcrumbSchema,
+} from '../../lib/schema';
+
+const BASE_PATH = '/katalog/';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('catalog')).filter((e) => !e.data.draft);
+  return entries.map((entry) => ({
+    params: { slug: stripExtension(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const item = entryToCatalogItem(entry, BASE_PATH);
+const canonicalUrl = resolveCanonical(item.url);
+
+// Related items resolved at build time (same category first, no client state).
+const related = relatedItems(
+  item,
+  (await getCollection('catalog'))
+    .filter((e) => !e.data.draft)
+    .map((e) => entryToCatalogItem(e, BASE_PATH))
+);
+
+const breadcrumbItems = [
+  { name: 'Beranda', url: '/' },
+  { name: 'Katalog', url: BASE_PATH },
+  { name: item.name, url: item.url },
+];
+
+const graph = [
+  buildWebSiteSchema(),
+  buildOrganizationSchema(),
+  buildWebPageSchema(canonicalUrl, item.name, item.description ?? item.name, {
+    breadcrumbId: `${canonicalUrl}#breadcrumb`,
+  }),
+  buildBreadcrumbSchema(breadcrumbItems, canonicalUrl),
+  buildProductSchema(item, canonicalUrl),
+];
+---
+
+<BaseLayout
+  title={item.name}
+  description={item.description ?? item.name}
+  canonical={canonicalUrl}
+  graph={graph}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+
+    <article>
+      <header class="mb-8">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          {item.name}
+        </h1>
+        {item.description && (
+          <p class="mt-3 text-lg text-slate-600 leading-relaxed">
+            {item.description}
+          </p>
+        )}
+      </header>
+
+      <CatalogGallery images={item.images ?? []} name={item.name} />
+
+      <dl class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {item.category && (
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Kategori</dt>
+            <dd class="mt-1 font-medium text-slate-900">{item.category}</dd>
+          </div>
+        )}
+        {item.price && (
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Harga</dt>
+            <dd class="mt-1 font-medium text-slate-900">{formatPrice(item.price)}</dd>
+          </div>
+        )}
+        {item.available !== undefined && (
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">Ketersediaan</dt>
+            <dd class="mt-1 font-medium text-slate-900">
+              {item.available ? 'Tersedia' : 'Tidak tersedia'}
+            </dd>
+          </div>
+        )}
+      </dl>
+
+      <nav aria-label="Navigasi katalog" class="mt-10 pt-6 border-t border-slate-200">
+        <a href={BASE_PATH} class="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+          <span aria-hidden="true">←</span> Kembali ke Katalog
+        </a>
+      </nav>
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-heading" class="mt-12">
+          <h2 id="related-heading" class="text-2xl font-bold text-slate-900 mb-6">
+            Item Terkait
+          </h2>
+          <CatalogGrid items={related} columns={3} />
+        </section>
+      )}
+    </article>
+  </div>
+</BaseLayout>

@@ -51,6 +51,26 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 - Link internal deskriptif (`Kembali ke Artikel & Wawasan`, bukan "klik di sini"); tanpa link farm.
 - Tidak ada jaminan ranking, indexing, sitasi AI, atau visibilitas LLM — fondasi ini hanya membuat konten layak crawl dan layak kutip.
 
+## Capability: katalog (`src/capabilities/catalog/`)
+
+Kapan: project butuh listing + detail item terstruktur (produk, properti, material, jasa, portfolio).
+Bukan e-commerce: tidak ada cart, checkout, payment, search, atau state — harga hanya data display.
+
+- `types.ts` (`CatalogItem` generik, field bisnis opsional) + `lib/catalog.ts` (pure: normalize, sort, filter, URL, `formatPrice`, `buildProductSchema` jujur).
+- `CatalogCard` / `CatalogGrid` / `CatalogGallery`: 0 JS, `<article>` semantik.
+- Collection `catalog/` (nama netral, bukan `products/`); `draft: true` dikecualikan di mana-mana.
+- `Offer` hanya bila harga asli ada; tanpa harga → tanpa `Offer`. Tanpa brand/review/rating palsu.
+- Routing milik page project (demo: `/katalog/`); hapus `src/content/catalog/` + `src/pages/katalog/` bila tak perlu.
+- Komposisi dengan LEAD di level page (contoh konsep, bukan bawaan):
+  `detail katalog (CATALOG) + WaButton (LEAD)` — CATALOG tidak mengimpor LEAD.
+
+## Capability: pencarian No-JS (`src/capabilities/search/`)
+
+Tanpa index, tanpa state, tanpa query param, tanpa dep baru: `groupByCategory`,
+`categorySlug`, `relatedItems` — murni fungsi build-time. Hasilnya dirender sebagai
+link statis: halaman `/katalog/kategori/[slug]/` + nav kategori + section "Item Terkait".
+Aturan: `getStaticPaths` harus mandiri (literal inline, tanpa binding scope-modul).
+
 ## Dependensi: trade-off yang disengaja
 
 | Keputusan | Alasan |
@@ -61,3 +81,4 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 | Tanpa `astro-icon` | Nol pemakaian ikon; pasang lagi saat dibutuhkan. |
 | `ClientRouter` + `prefetch: true` | Satu-satunya JS runtime (±16KB): transisi halaman + prefetch link. |
 | Tanpa `astro:assets` di konten | Belum ada gambar konten; pipeline Sharp siap saat dibutuhkan. |
+| `sharp` di `dependencies` | Wajib sejak katalog memakai `<Image>`; Astro tidak membundel Sharp otomatis di pnpm. |

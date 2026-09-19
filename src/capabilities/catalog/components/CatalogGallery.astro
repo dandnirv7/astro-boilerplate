@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import type { CatalogImage } from '../types';
+
+export interface Props {
+  images: CatalogImage[];
+  /** Used as fallback alt context; each image keeps its own alt. */
+  name: string;
+}
+
+const { images, name } = Astro.props;
+const [primary, ...rest] = images;
+---
+
+{images.length > 0 && (
+  <div>
+    {primary &&
+      (typeof primary.src === 'string' ? (
+        <figure>
+          <img
+            src={primary.src}
+            alt={primary.alt || name}
+            loading="eager"
+            fetchpriority="high"
+            class="w-full aspect-[4/3] object-cover rounded-2xl border border-slate-200"
+          />
+        </figure>
+      ) : (
+        <figure>
+          <Image
+            src={primary.src}
+            alt={primary.alt || name}
+            widths={[800, 1200]}
+            sizes="(max-width: 1024px) 100vw, 800px"
+            loading="eager"
+            fetchpriority="high"
+            class="w-full aspect-[4/3] object-cover rounded-2xl border border-slate-200"
+          />
+        </figure>
+      ))}
+
+    {rest.length > 0 && (
+      <ul class="mt-4 grid grid-cols-3 sm:grid-cols-4 gap-3" aria-label={`Gambar tambahan ${name}`}>
+        {rest.map((img) =>
+          typeof img.src === 'string' ? (
+            <li>
+              <figure>
+                <img
+                  src={img.src}
+                  alt={img.alt || name}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full aspect-square object-cover rounded-xl border border-slate-200"
+                />
+              </figure>
+            </li>
+          ) : (
+            <li>
+              <figure>
+                <Image
+                  src={img.src}
+                  alt={img.alt || name}
+                  widths={[300, 600]}
+                  sizes="(max-width: 768px) 33vw, 200px"
+                  loading="lazy"
+                  class="w-full aspect-square object-cover rounded-xl border border-slate-200"
+                />
+              </figure>
+            </li>
+          )
+        )}
+      </ul>
+    )}
+  </div>
+)}

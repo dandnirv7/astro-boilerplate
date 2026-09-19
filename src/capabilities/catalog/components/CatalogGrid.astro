@@ -1,0 +1,31 @@
+---
+import CatalogCard from './CatalogCard.astro';
+import type { CatalogItem } from '../types';
+
+export interface Props {
+  items: CatalogItem[];
+  /** Grid columns on md+ screens (mobile-first single column). */
+  columns?: 2 | 3 | 4;
+  emptyText?: string;
+}
+
+const { items, columns = 3, emptyText = 'Belum ada item untuk ditampilkan.' } = Astro.props;
+
+const columnClass: Record<NonNullable<Props['columns']>, string> = {
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+  4: 'md:grid-cols-4',
+};
+---
+
+{items.length === 0 ? (
+  <p role="status" class="py-12 text-center text-slate-500">{emptyText}</p>
+) : (
+  <ul class={`grid grid-cols-1 sm:grid-cols-2 ${columnClass[columns]} gap-6`}>
+    {items.map((item) => (
+      <li>
+        <CatalogCard item={item} />
+      </li>
+    ))}
+  </ul>
+)}
