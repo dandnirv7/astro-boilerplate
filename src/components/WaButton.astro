@@ -1,0 +1,82 @@
+---
+import { buildWaLink } from '../lib/whatsapp';
+
+export interface Props {
+  text?: string;
+  message?: string;
+  number?: string;
+  variant?: 'inline' | 'floating';
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  text = 'Hubungi via WhatsApp',
+  message = 'Halo, saya ingin bertanya tentang layanan Anda.',
+  number,
+  variant = 'inline',
+  class: className = '',
+  ariaLabel = 'Hubungi tim kami via WhatsApp',
+} = Astro.props;
+
+const waUrl = buildWaLink({ number, text: message });
+---
+
+{variant === 'floating' ? (
+  <aside aria-label="Aksi Cepat Kontak" class="fixed bottom-6 right-6 z-50">
+    <a
+      href={waUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={ariaLabel}
+      data-event="lead_whatsapp_click"
+      class={`group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-emerald-300 ${className}`}
+    >
+      <svg
+        class="w-6 h-6 fill-current"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.476-.15-.676.15s-.777.978-.953 1.179c-.175.201-.351.226-.652.075s-1.272-.469-2.423-1.496c-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.135-.135.301-.351.452-.527.15-.175.201-.301.301-.501.101-.201.05-.376-.025-.527s-.676-1.631-.927-2.233c-.244-.587-.492-.507-.676-.516l-.576-.01c-.201 0-.527.075-.802.376s-1.053 1.028-1.053 2.508 1.078 2.91 1.229 3.111c.15.201 2.12 3.237 5.136 4.54 3.015 1.303 3.015.869 3.567.819.551-.05 1.78-.727 2.031-1.429.251-.702.251-1.304.175-1.429-.075-.125-.276-.201-.577-.351z"/>
+        <path d="M12.004 2c-5.518 0-9.999 4.48-9.999 9.997 0 1.763.46 3.486 1.332 5.006l-1.417 5.176 5.297-1.389c1.47.802 3.127 1.224 4.814 1.224 5.518 0 10.001-4.48 10.001-9.997 0-5.517-4.483-9.997-10.001-9.997zm0 18.232c-1.505 0-2.981-.405-4.27-1.171l-.306-.182-3.176.833.847-3.096-.2-.318c-.843-1.341-1.288-2.894-1.288-4.498 0-4.543 3.696-8.239 8.243-8.239 4.546 0 8.242 3.696 8.242 8.239 0 4.544-3.696 8.24-8.242 8.24z"/>
+      </svg>
+      <span class="hidden sm:inline">{text}</span>
+    </a>
+  </aside>
+) : (
+  <a
+    href={waUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={ariaLabel}
+    data-event="lead_whatsapp_click"
+    class={`inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg shadow transition-all duration-150 transform hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-emerald-300 ${className}`}
+  >
+    <svg
+      class="w-5 h-5 fill-current"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.476-.15-.676.15s-.777.978-.953 1.179c-.175.201-.351.226-.652.075s-1.272-.469-2.423-1.496c-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.135-.135.301-.351.452-.527.15-.175.201-.301.301-.501.101-.201.05-.376-.025-.527s-.676-1.631-.927-2.233c-.244-.587-.492-.507-.676-.516l-.576-.01c-.201 0-.527.075-.802.376s-1.053 1.028-1.053 2.508 1.078 2.91 1.229 3.111c.15.201 2.12 3.237 5.136 4.54 3.015 1.303 3.015.869 3.567.819.551-.05 1.78-.727 2.031-1.429.251-.702.251-1.304.175-1.429-.075-.125-.276-.201-.577-.351z"/>
+      <path d="M12.004 2c-5.518 0-9.999 4.48-9.999 9.997 0 1.763.46 3.486 1.332 5.006l-1.417 5.176 5.297-1.389c1.47.802 3.127 1.224 4.814 1.224 5.518 0 10.001-4.48 10.001-9.997 0-5.517-4.483-9.997-10.001-9.997zm0 18.232c-1.505 0-2.981-.405-4.27-1.171l-.306-.182-3.176.833.847-3.096-.2-.318c-.843-1.341-1.288-2.894-1.288-4.498 0-4.543 3.696-8.239 8.243-8.239 4.546 0 8.242 3.696 8.242 8.239 0 4.544-3.696 8.24-8.242 8.24z"/>
+    </svg>
+    <span>{text}</span>
+  </a>
+)}
+
+<script is:inline data-wa-track>
+  // Satu listener global per page (script is:inline, guard via dataset).
+  if (!window.__waTrackBound) {
+    window.__waTrackBound = true;
+    document.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element && e.target.closest('[data-event="lead_whatsapp_click"]');
+      if (!btn) return;
+      const dl = window.dataLayer;
+      if (Array.isArray(dl)) {
+        dl.push({ event: 'lead_whatsapp_click', timestamp: new Date().toISOString() });
+      }
+    });
+  }
+</script>

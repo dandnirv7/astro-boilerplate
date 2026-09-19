@@ -1,0 +1,37 @@
+---
+import { siteConfig } from '../config/site';
+import WaButton from './WaButton.astro';
+
+export interface Props {
+  showCta?: boolean;
+}
+
+const { showCta = true } = Astro.props;
+---
+
+<header role="banner" class="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- Brand -->
+    <a href="/" class="flex items-center gap-2 font-bold text-xl text-slate-900 tracking-tight hover:text-emerald-700 transition-colors">
+      <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-black text-lg">Z</span>
+      <span>{siteConfig.name}</span>
+    </a>
+
+    <!-- Nav links -->
+    <nav role="navigation" aria-label="Navigasi Utama" class="hidden md:flex items-center gap-8">
+      <slot name="nav">
+        <a href="/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Beranda</a>
+        <a href="/articles/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Artikel & Wawasan</a>
+        <a href="/#faq" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">FAQ</a>
+        <a href="/tentang-kami/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Tentang Kami</a>
+      </slot>
+    </nav>
+
+    <!-- Header CTA -->
+    {showCta && (
+      <div class="flex items-center gap-4">
+        <WaButton text="Konsultasi" variant="inline" class="text-sm px-4 py-2" />
+      </div>
+    )}
+  </div>
+</header>
