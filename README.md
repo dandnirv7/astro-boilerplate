@@ -5,7 +5,7 @@ Detail arsitektur: `BOILERPLATE-SPEC.md` (kontrak), `AGENTS.md` (aturan agen).
 ## Pakai untuk project baru (3 sentuhan)
 
 1. `src/config/site.ts` → url, name, description, kontak WA, socials.
-2. Env deploy → `SITE_URL=https://domain-produksi.id` (wajib, kalau tidak sitemap gagal diam-diam).
+2. Env deploy → `SITE_URL=https://domain-produksi.id` (wajib; build gagal eksplisit bila absen).
 3. `src/content/**` → isi `pages/`, `articles/`, `faqs/` (atau tambah collection sendiri + Zod di `src/content.config.ts`).
 
 Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/og/[...slug].png.ts` bila perlu OG per-item.
@@ -38,9 +38,13 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 |---|---|---|---|---|---|
 | Halaman publik (`/`, `/tentang-kami/`) | yes | yes | yes | yes | yes (`WebSite`, `Organization`, `WebPage`, `BreadcrumbList`, `FAQPage` bila ada FAQ) |
 | Listing artikel | yes | yes | yes | yes | yes (tanpa `BlogPosting`) |
-| Detail artikel | yes | yes | yes | yes | yes (+ `BlogPosting`) |
+| Detail artikel | yes | yes | yes | yes (+ `BlogPosting`) |
+| Listing katalog | yes | yes | yes | yes | yes (tanpa `Product`) |
+| Detail katalog | yes | yes | yes | yes | yes (+ `Product`; `Offer` hanya bila harga asli ada) |
+| Kategori katalog | yes | yes | yes | yes | yes (tanpa `Product`) |
 | 404 | no | yes | no | self (`/404/`) | tidak ada |
 | Draft (`draft: true`) | tidak di-build | — | no | — | — |
+| OG endpoint (`/og/*.png`), `llms.txt` | no (bukan halaman) | — | no | — | — |
 
 ## Menulis konten yang mudah dikutip (AEO/GEO tanpa hack)
 
@@ -71,6 +75,31 @@ Tanpa index, tanpa state, tanpa query param, tanpa dep baru: `groupByCategory`,
 link statis: halaman `/katalog/kategori/[slug]/` + nav kategori + section "Item Terkait".
 Aturan: `getStaticPaths` harus mandiri (literal inline, tanpa binding scope-modul).
 
+## Capability: LEAD (`src/capabilities/lead/`)
+
+Aktifkan per halaman (core tidak pernah me-render-nya sendiri):
+
+```astro
+---
+import Header from '../components/Header.astro';
+import { WaButton } from '../capabilities/lead/index.js';
+---
+<Header slot="header">
+  <div slot="cta"><WaButton text="Konsultasi" /></div>
+</Header>
+<!-- ...konten... -->
+<WaButton variant="floating" />
+```
+
+Aturan: nomor dari `siteConfig.contact.whatsapp` (jangan hard-code); tanpa nomor → CTA tidak dirender (bukan `href="#"`); event `lead_whatsapp_click` lewat `track()` (no-op bila tanpa analytics); vendor analytics (GA4/Pixel) dipasang di project, bukan di sini.
+
+## Branding, deploy, batasan
+
+- Branding: `src/config/site.ts` (nama, deskripsi, kontak, socials) + `src/components/Header.astro` (logo/teks) + konten demo diganti.
+- Deploy (Vercel, statis): `SITE_URL=https://domain-produksi.id` di env → `pnpm install && pnpm check && pnpm build && pnpm diagnost` → deploy `dist/`. Tanpa SSR, tanpa server endpoint.
+- Demo katalog (`src/content/catalog/contoh-item-a|b`, `src/pages/katalog/`) adalah placeholder — ganti/hapus untuk project nyata.
+- Batasan: bukan toko online (tanpa cart/checkout/payment), bukan CMS, tanpa search engine (hanya grouping build-time), tanpa i18n, tanpa auth. Tidak ada jaminan indexing, ranking, sitasi AI, traffic, atau konversi.
+
 ## Dependensi: trade-off yang disengaja
 
 | Keputusan | Alasan |
@@ -80,5 +109,5 @@ Aturan: `getStaticPaths` harus mandiri (literal inline, tanpa binding scope-modu
 | Tanpa `@astrojs/partytown` | Nol third-party script; `track()` no-op aman tanpa `dataLayer`. Pasang lagi saat project butuh GA4/Pixel. |
 | Tanpa `astro-icon` | Nol pemakaian ikon; pasang lagi saat dibutuhkan. |
 | `ClientRouter` + `prefetch: true` | Satu-satunya JS runtime (±16KB): transisi halaman + prefetch link. |
-| Tanpa `astro:assets` di konten | Belum ada gambar konten; pipeline Sharp siap saat dibutuhkan. |
+| `astro:assets` + Sharp untuk gambar katalog | `<Image>` responsif + lazy; primer galeri eager (LCP). Pipeline Sharp aktif karena ada gambar konten. |
 | `sharp` di `dependencies` | Wajib sejak katalog memakai `<Image>`; Astro tidak membundel Sharp otomatis di pnpm. |

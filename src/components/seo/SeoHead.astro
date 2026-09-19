@@ -1,6 +1,7 @@
 ---
 import { siteConfig } from '../../config/site';
 import { resolveCanonical, resolveTitle } from '../../lib/seo';
+import { absoluteUrl } from '../../lib/schema';
 import { getOgImageUrl } from '../../lib/og';
 
 export interface Props {
@@ -54,11 +55,13 @@ const formattedTitle = resolveTitle(title);
 const ogTitle = og.title || title || siteConfig.name;
 const ogDescription = og.description || description;
 
-// OG Image resolution (1200x630).
+// OG Image resolution (1200x630, always absolute: explicit image props may be
+// site-relative paths, so resolve them against the production URL).
 // Non-indexable pages (404, drafts, private utilities) fall back to the
 // default OG image instead of requesting a per-page image that is not generated.
-const ogImageUrl =
-  og.image || image || (robots.index === false ? getOgImageUrl() : getOgImageUrl(Astro.url.pathname));
+const ogImageUrl = absoluteUrl(
+  og.image || image || (robots.index === false ? getOgImageUrl() : getOgImageUrl(Astro.url.pathname))
+);
 
 // Robots directives
 const isIndex = robots.index ?? true;

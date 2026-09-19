@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { siteConfig } from '../../config/site';
 import {
   CatalogGallery,
   CatalogGrid,
@@ -62,6 +63,7 @@ const graph = [
   title={item.name}
   description={item.description ?? item.name}
   canonical={canonicalUrl}
+  image={siteConfig.ogDefault}
   graph={graph}
 >
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
