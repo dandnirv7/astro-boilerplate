@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Halaman Tidak Ditemukan (404)"
+  description="Maaf, halaman yang Anda tuju tidak dapat ditemukan atau mungkin telah dipindahkan."
+  robots={{ index: false, follow: true }}
+  showFloatingWa={false}
+>
+  <div class="max-w-3xl mx-auto px-4 py-24 text-center">
+    <p class="text-sm font-semibold uppercase tracking-wider text-emerald-600">Kesalahan 404</p>
+    <h1 class="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+      Halaman Tidak Ditemukan
+    </h1>
+    <p class="mt-4 text-base text-slate-600 leading-relaxed">
+      Tautan yang Anda tuju mungkin telah berpindah lokasi atau terdapat kekeliruan pengetikan alamat URL.
+    </p>
+
+    <nav aria-label="Halaman yang mungkin Anda cari" class="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200 text-left">
+      <p class="text-sm font-semibold text-slate-900 mb-3">Halaman yang mungkin Anda cari:</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href="/" class="text-emerald-700 hover:text-emerald-800 font-medium">→ Beranda</a></li>
+        <li><a href="/articles/" class="text-emerald-700 hover:text-emerald-800 font-medium">→ Artikel &amp; Wawasan</a></li>
+        <li><a href="/tentang-kami/" class="text-emerald-700 hover:text-emerald-800 font-medium">→ Tentang Kami</a></li>
+        <li><a href="/#faq" class="text-emerald-700 hover:text-emerald-800 font-medium">→ Pertanyaan Umum (FAQ)</a></li>
+      </ul>
+    </nav>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-colors"
+      >
+        Kembali ke Beranda
+      </a>
+      <a
+        href="/#faq"
+        class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 text-base font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-colors"
+      >
+        Lihat Bantuan (FAQ)
+      </a>
+    </div>
+  </div>
+</BaseLayout>

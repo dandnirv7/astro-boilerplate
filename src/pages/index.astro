@@ -1,11 +1,136 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Faq from '../components/Faq.astro';
+import WaButton from '../components/WaButton.astro';
+import { siteConfig } from '../config/site';
+import { resolveCanonical } from '../lib/seo';
+import {
+  buildWebSiteSchema,
+  buildOrganizationSchema,
+  buildWebPageSchema,
+  buildFaqSchema,
+} from '../lib/schema';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Fetch FAQs for synchronised visible HTML & Schema.org FAQPage
+// Robust terhadap id dengan/tanpa ekstensi (glob loader bisa dua-duanya).
+const faqCollections = await getCollection('faqs');
+const faqEntry = faqCollections.find((e) => e.id.replace(/\.[^/.]+$/, '') === 'pertanyaan-umum');
+const faqs = faqEntry?.data?.items || [];
+
+const canonicalUrl = resolveCanonical(Astro.url);
+
+// Single JSON-LD @graph for the page
+const graph = [
+  buildWebSiteSchema(),
+  buildOrganizationSchema(),
+  buildWebPageSchema(canonicalUrl, siteConfig.name, siteConfig.description),
+  buildFaqSchema(faqs, canonicalUrl),
+];
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title={siteConfig.name}
+  description={siteConfig.description}
+  canonical={canonicalUrl}
+  graph={graph}
+>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-linear-to-b from-slate-50 via-white to-white py-20 sm:py-28 border-b border-slate-100">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Arsitektur Generik • Siap Skala • Teroptimasi AEO & SEO</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+        Fondasi Web Cepat & Presisi Menuju <span class="text-emerald-600">Konversi Nyata</span>
+      </h1>
+
+      <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+        <strong>Platform berbasis Astro generasi mutakhir</strong> yang dirancang untuk mengintegrasikan performa instan, structured data JSON-LD valid, kesiapan agen AI (AEO/GEO), dan alur konversi langsung menuju WhatsApp.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <WaButton text="Konsultasi Kebutuhan Anda" message="Halo, saya ingin berdiskusi mengenai implementasi solusi Anda." class="text-base px-8 py-3.5" />
+        <a
+          href="/articles/"
+          class="inline-flex items-center justify-center px-7 py-3.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition-colors"
+        >
+          Eksplorasi Wawasan
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- AEO Fact Table Section -->
+  <section class="py-16 bg-white border-b border-slate-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">
+          Ringkasan Spesifikasi & Keunggulan Utama
+        </h2>
+        <p class="mt-2 text-slate-600 text-sm sm:text-base">
+          Tabel data faktual yang dioptimalkan untuk sitasi mesin pencari dan AI crawler.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-900 font-semibold">
+            <tr>
+              <th scope="col" class="px-6 py-4">Parameter Inti</th>
+              <th scope="col" class="px-6 py-4">Spesifikasi Arsitektur</th>
+              <th scope="col" class="px-6 py-4">Dampak Langsung</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white text-slate-700">
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Bahasa & Lokalisasi</td>
+              <td class="px-6 py-4">Bahasa Indonesia murni (id-ID)</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Relevansi pencarian lokal maksimal</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Structured Data</td>
+              <td class="px-6 py-4">Tunggal JSON-LD @graph via schema-dts</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">100% Rich Results & Entity recognition</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Generasi Gambar OG</td>
+              <td class="px-6 py-4">Canvas API build-time (1200x630 PNG)</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Pratinjau tautan sempurna di WhatsApp & FB</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Akses AI & Crawler</td>
+              <td class="px-6 py-4">Citation-friendly (llms.txt terkuras)</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Dikutip oleh Claude, GPT, dan Perplexity</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-semibold text-slate-900">Alur Lead WhatsApp</td>
+              <td class="px-6 py-4">Direct click-to-chat + event tracking</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Nol gesekan konversi tanpa form rumit</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section (Fully synced with FAQPage Schema) -->
+  <Faq faqs={faqs} />
+
+  <!-- Bottom CTA Section -->
+  <section class="py-16 bg-slate-900 text-white text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+        Siap Memulai Komunikasi Langsung?
+      </h2>
+      <p class="mt-4 text-slate-400 text-base leading-relaxed">
+        Hubungi kami kapan saja untuk konsultasi cepat, pertanyaan spesifikasi, atau penjajakan kerja sama profesional.
+      </p>
+      <div class="mt-8 flex justify-center">
+        <WaButton text="Kirim Pesan WhatsApp Sekarang" class="text-base px-8 py-4" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

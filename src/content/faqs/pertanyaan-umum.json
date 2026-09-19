@@ -1,0 +1,21 @@
+{
+  "title": "Pertanyaan Umum (FAQ)",
+  "items": [
+    {
+      "question": "Bagaimana cara melakukan konsultasi atau pemesanan?",
+      "answer": "Anda dapat langsung menekan tombol WhatsApp yang tersedia di seluruh halaman untuk terhubung dengan tim kami secara instan tanpa perlu mengisi formulir panjang."
+    },
+    {
+      "question": "Berapa lama waktu respon yang diberikan tim?",
+      "answer": "Tim kami merespons pertanyaan pada jam operasional kerja rata-rata dalam waktu kurang dari 15 menit melalui kanal WhatsApp resmi."
+    },
+    {
+      "question": "Apakah spesifikasi solusi dapat disesuaikan dengan kebutuhan khusus?",
+      "answer": "Tentu saja. Setiap solusi dapat disesuaikan secara fleksibel berdasarkan skala, anggaran, dan target objektif yang Anda tentukan."
+    },
+    {
+      "question": "Metode pembayaran apa saja yang didukung?",
+      "answer": "Kami menerima transfer bank resmi, QRIS, dan metode pembayaran bisnis terverifikasi lainnya untuk memastikan keamanan transaksi Anda."
+    }
+  ]
+}
