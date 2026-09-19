@@ -2,8 +2,9 @@
 import { getCollection, render } from 'astro:content';
 import type { BlogPosting } from 'schema-dts';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import WaButton from '../../components/WaButton.astro';
+import { WaButton } from '../../capabilities/lead/index.js';
 import { siteConfig } from '../../config/site';
 import { resolveCanonical } from '../../lib/seo';
 import {
@@ -95,6 +96,13 @@ const graph = [
     tags: article.data.tags,
   }}
 >
+  <!-- Explicit LEAD composition: header CTA + floating button (opt-in per page) -->
+  <Header slot="header">
+    <div slot="cta" class="flex items-center gap-4">
+      <WaButton text="Konsultasi" variant="inline" class="text-sm px-4 py-2" />
+    </div>
+  </Header>
+
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
     <Breadcrumbs items={breadcrumbItems} class="mb-6" />
 
@@ -148,4 +156,6 @@ const graph = [
       </div>
     </article>
   </div>
+
+  <WaButton variant="floating" />
 </BaseLayout>

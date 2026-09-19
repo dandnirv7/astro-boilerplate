@@ -66,17 +66,18 @@ const waUrl = buildWaLink({ number, text: message });
   </a>
 )}
 
-<script is:inline data-wa-track>
-  // Satu listener global per page (script is:inline, guard via dataset).
+<script>
+  import { track } from '../lib/track';
+
+  // Single delegated listener per page (guarded: one component instance is enough,
+  // extra instances are no-ops). Event flows through the LEAD tracking abstraction.
   if (!window.__waTrackBound) {
     window.__waTrackBound = true;
     document.addEventListener('click', (e) => {
-      const btn = e.target instanceof Element && e.target.closest('[data-event="lead_whatsapp_click"]');
-      if (!btn) return;
-      const dl = window.dataLayer;
-      if (Array.isArray(dl)) {
-        dl.push({ event: 'lead_whatsapp_click', timestamp: new Date().toISOString() });
-      }
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      if (!target.closest('[data-event="lead_whatsapp_click"]')) return;
+      track('lead_whatsapp_click');
     });
   }
 </script>

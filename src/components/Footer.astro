@@ -1,9 +1,7 @@
 ---
 import { siteConfig } from '../config/site';
-import { buildWaLink } from '../lib/whatsapp';
 
 const currentYear = new Date().getFullYear();
-const footerWaUrl = buildWaLink({ text: 'Halo, saya ingin bertanya tentang layanan Anda.' });
 ---
 
 <footer role="contentinfo" class="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
@@ -46,13 +44,6 @@ const footerWaUrl = buildWaLink({ text: 'Halo, saya ingin bertanya tentang layan
             <li>
               <a href={`tel:${siteConfig.contact.phone.replace(/[^0-9+]/g, '')}`} class="hover:text-emerald-400 transition-colors">
                 {siteConfig.contact.phone}
-              </a>
-            </li>
-          )}
-          {siteConfig.contact.whatsapp && (
-            <li>
-              <a href={footerWaUrl} target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
-                Chat WhatsApp Langsung
               </a>
             </li>
           )}
