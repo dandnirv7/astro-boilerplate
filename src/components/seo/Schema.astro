@@ -1,0 +1,20 @@
+---
+import type { Thing } from 'schema-dts';
+import { toJsonLd } from '../../lib/schema';
+
+export interface Props {
+  graph: (Thing | null | undefined)[] | Thing | null;
+}
+
+const { graph } = Astro.props;
+
+let jsonLdContent = '';
+if (graph) {
+  const nodes = Array.isArray(graph) ? graph : [graph];
+  jsonLdContent = toJsonLd(nodes);
+}
+---
+
+{jsonLdContent && (
+  <script type="application/ld+json" set:html={jsonLdContent} />
+)}
