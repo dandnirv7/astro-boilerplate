@@ -1,11 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Faq from '../components/Faq.astro';
 import { WaButton } from '../capabilities/lead/index.js';
 import { siteConfig } from '../config/site';
 import { resolveCanonical } from '../lib/seo';
+import { findEntry } from '../lib/content';
 import {
   buildWebSiteSchema,
   buildOrganizationSchema,
@@ -14,9 +14,7 @@ import {
 } from '../lib/schema';
 
 // Fetch FAQs for synchronised visible HTML & Schema.org FAQPage
-// Robust terhadap id dengan/tanpa ekstensi (glob loader bisa dua-duanya).
-const faqCollections = await getCollection('faqs');
-const faqEntry = faqCollections.find((e) => e.id.replace(/\.[^/.]+$/, '') === 'pertanyaan-umum');
+const faqEntry = await findEntry('faqs', 'pertanyaan-umum');
 const faqs = faqEntry?.data?.items || [];
 
 const canonicalUrl = resolveCanonical(Astro.url);
@@ -48,7 +46,7 @@ const graph = [
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold mb-6">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Arsitektur Generik • Siap Skala • Teroptimasi AEO & SEO</span>
+        <span>Arsitektur Generik • Static-First • Fondasi SEO</span>
       </div>
 
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -56,7 +54,7 @@ const graph = [
       </h1>
 
       <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-        <strong>Platform berbasis Astro generasi mutakhir</strong> yang dirancang untuk mengintegrasikan performa instan, structured data JSON-LD valid, kesiapan agen AI (AEO/GEO), dan alur konversi langsung menuju WhatsApp.
+        <strong>Platform berbasis Astro generasi mutakhir</strong> yang dirancang dengan rendering statis, structured data JSON-LD valid, konten machine-readable, dan alur konversi langsung menuju WhatsApp.
       </p>
 
       <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -85,6 +83,9 @@ const graph = [
 
       <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-sm">
         <table class="w-full text-left text-sm">
+          <caption class="px-6 py-3 text-left text-sm text-slate-600 bg-slate-50 border-b border-slate-200">
+            Ringkasan karakteristik teknis boilerplate: parameter inti, spesifikasi yang didukung, dan dampaknya.
+          </caption>
           <thead class="bg-slate-50 border-b border-slate-200 text-slate-900 font-semibold">
             <tr>
               <th scope="col" class="px-6 py-4">Parameter Inti</th>
@@ -96,27 +97,27 @@ const graph = [
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Bahasa & Lokalisasi</td>
               <td class="px-6 py-4">Bahasa Indonesia murni (id-ID)</td>
-              <td class="px-6 py-4 text-emerald-700 font-medium">Relevansi pencarian lokal maksimal</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Konten berbahasa Indonesia untuk pencarian lokal</td>
             </tr>
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Structured Data</td>
               <td class="px-6 py-4">Tunggal JSON-LD @graph via schema-dts</td>
-              <td class="px-6 py-4 text-emerald-700 font-medium">100% Rich Results & Entity recognition</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Data terstruktur siap validasi</td>
             </tr>
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Generasi Gambar OG</td>
               <td class="px-6 py-4">Canvas API build-time (1200x630 PNG)</td>
-              <td class="px-6 py-4 text-emerald-700 font-medium">Pratinjau tautan sempurna di WhatsApp & FB</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Gambar pratinjau 1200×630 untuk tautan</td>
             </tr>
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Akses AI & Crawler</td>
               <td class="px-6 py-4">Citation-friendly (llms.txt terkuras)</td>
-              <td class="px-6 py-4 text-emerald-700 font-medium">Dikutip oleh Claude, GPT, dan Perplexity</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Konten machine-readable untuk sitasi</td>
             </tr>
             <tr>
               <td class="px-6 py-4 font-semibold text-slate-900">Alur Lead WhatsApp</td>
               <td class="px-6 py-4">Direct click-to-chat + event tracking</td>
-              <td class="px-6 py-4 text-emerald-700 font-medium">Nol gesekan konversi tanpa form rumit</td>
+              <td class="px-6 py-4 text-emerald-700 font-medium">Tautan chat langsung tanpa formulir</td>
             </tr>
           </tbody>
         </table>

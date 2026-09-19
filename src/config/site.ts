@@ -13,6 +13,22 @@ export interface SiteSocials {
   [key: string]: string | undefined;
 }
 
+/**
+ * Single authoritative production URL.
+ * Same source as astro.config.mjs (`SITE_URL`), normalized identically
+ * (trimmed, no trailing slash). Fails fast instead of silently falling
+ * back to a placeholder domain.
+ */
+function resolveSiteUrl(): string {
+  const raw = (import.meta.env.SITE_URL || '').trim().replace(/\/+$/, '');
+  if (!raw) {
+    throw new Error(
+      '[config] SITE_URL is required. Copy .env.example to .env and set SITE_URL (e.g. SITE_URL=https://domain-produksi.id).'
+    );
+  }
+  return raw;
+}
+
 export interface SiteConfig {
   url: string;
   name: string;
@@ -25,7 +41,7 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  url: import.meta.env.SITE_URL || "https://example.com",
+  url: resolveSiteUrl(),
   name: "Boilerplate Astro",
   tagline: "Boilerplate Generik Marketing & Katalog",
   description:

@@ -33,7 +33,9 @@ export function stripTrackingParams(url: string | URL): string {
 }
 
 /**
- * Resolve an absolute canonical URL, stripping UTM and other tracking parameters.
+ * Resolve an absolute canonical URL.
+ * Canonical represents page identity: all query parameters (tracking or
+ * otherwise) are dropped, yielding the clean page URL.
  */
 export function resolveCanonical(pathnameOrUrl?: string | URL, baseUrl: string = siteConfig.url): string {
   const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
@@ -57,6 +59,9 @@ export function resolveCanonical(pathnameOrUrl?: string | URL, baseUrl: string =
 
     const cleanUrl = stripTrackingParams(resolved);
     const parsed = new URL(cleanUrl);
+
+    // Canonical identity carries no query state: drop every parameter.
+    parsed.search = '';
 
     // Normalize trailing slash for directories / root, avoid trailing slash on file extensions
     const hasExtension = /\.[a-zA-Z0-9]+$/.test(parsed.pathname);

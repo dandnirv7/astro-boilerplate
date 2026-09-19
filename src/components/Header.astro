@@ -2,7 +2,7 @@
 import { siteConfig } from '../config/site';
 ---
 
-<header role="banner" class="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md">
+<header class="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
     <!-- Brand -->
     <a href="/" class="flex items-center gap-2 font-bold text-xl text-slate-900 tracking-tight hover:text-emerald-700 transition-colors">
@@ -11,7 +11,7 @@ import { siteConfig } from '../config/site';
     </a>
 
     <!-- Nav links -->
-    <nav role="navigation" aria-label="Navigasi Utama" class="hidden md:flex items-center gap-8">
+    <nav aria-label="Navigasi Utama" class="hidden md:flex items-center gap-8">
       <slot name="nav">
         <a href="/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Beranda</a>
         <a href="/articles/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Artikel & Wawasan</a>
@@ -22,5 +22,36 @@ import { siteConfig } from '../config/site';
 
     <!-- Optional CTA composed by the page/project layer -->
     <slot name="cta" />
+
+    <!-- Mobile navigation: native <details> disclosure, no framework -->
+    <details class="md:hidden" data-mobile-nav>
+      <summary
+        aria-label="Buka menu navigasi"
+        class="flex items-center justify-center w-10 h-10 rounded-lg text-slate-700 hover:bg-slate-100 cursor-pointer list-none [&::-webkit-details-marker]:hidden focus-visible:ring-2 focus-visible:ring-emerald-600"
+      >
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </summary>
+      <nav aria-label="Navigasi Seluler" class="absolute top-16 inset-x-0 bg-white border-b border-slate-200 shadow-lg">
+        <ul class="px-4 sm:px-6 py-4 space-y-1">
+          <li><a href="/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Beranda</a></li>
+          <li><a href="/articles/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Artikel &amp; Wawasan</a></li>
+          <li><a href="/#faq" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">FAQ</a></li>
+          <li><a href="/tentang-kami/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Tentang Kami</a></li>
+        </ul>
+      </nav>
+    </details>
   </div>
 </header>
+
+<script is:inline>
+  // Close the mobile <details> menu after navigation (needed for SPA transitions
+  // where the page does not fully reload; harmless no-op on full reloads).
+  document.addEventListener('click', (e) => {
+    const link = e.target instanceof Element && e.target.closest('[data-mobile-nav] a');
+    if (!link) return;
+    const menu = link.closest('details');
+    if (menu instanceof HTMLDetailsElement) menu.removeAttribute('open');
+  });
+</script>

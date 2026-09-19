@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { stripExtension } from '../lib/content';
 
 /**
  * Manual curated llms.txt (freelancers edition).
@@ -29,7 +30,7 @@ export const GET: APIRoute = async () => {
   if (articles.length > 0) {
     lines.push(``, `## Artikel pilihan`, ``);
     for (const article of articles) {
-      const cleanId = article.id.replace(/\.[^/.]+$/, '');
+      const cleanId = stripExtension(article.id);
       lines.push(`- [${article.data.title}](${base}/articles/${cleanId}/): ${article.data.description}`);
     }
   }
@@ -42,7 +43,7 @@ export const GET: APIRoute = async () => {
     siteConfig.contact.email ? `- Email: ${siteConfig.contact.email}` : ``,
   );
 
-  const body = lines.filter((l) => l !== `` || true).join(`\n`).replace(/\n{3,}/g, `\n\n`) + `\n`;
+  const body = lines.join(`\n`).replace(/\n{3,}/g, `\n\n`) + `\n`;
 
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },

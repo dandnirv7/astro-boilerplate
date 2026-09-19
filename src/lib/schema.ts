@@ -21,11 +21,18 @@ export function absoluteUrl(pathOrUrl: string, baseUrl: string = siteConfig.url)
 
 /**
  * Create a deterministic @id IRI for Schema nodes.
+ * Returns the base unchanged when it cannot be parsed as a URL
+ * (schema output must never throw during build).
  */
 export function makeId(base: string, suffix: string): string {
   if (suffix.startsWith('#')) {
     // Keep directory trailing slash intact before the hash
-    const hasExtension = /\.[a-zA-Z0-9]+$/.test(new URL(base, siteConfig.url).pathname);
+    let hasExtension = false;
+    try {
+      hasExtension = /\.[a-zA-Z0-9]+$/.test(new URL(base, siteConfig.url).pathname);
+    } catch {
+      hasExtension = false;
+    }
     const cleanBase = !hasExtension && !base.endsWith('/') ? `${base}/` : base;
     return `${cleanBase}${suffix}`;
   }
@@ -36,7 +43,8 @@ export function makeId(base: string, suffix: string): string {
 
 /**
  * Serialize an array of Schema.org Thing objects into a valid JSON-LD @graph string.
- * Strips undefined, null, or empty string values.
+ * Drops null/undefined nodes; `undefined` fields inside nodes are omitted
+ * by JSON.stringify. Empty strings are preserved as-is.
  */
 export function toJsonLd(graph: (Thing | null | undefined)[]): string {
   const activeNodes = graph.filter((node): node is Thing => Boolean(node));

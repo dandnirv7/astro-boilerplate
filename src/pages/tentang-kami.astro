@@ -1,10 +1,11 @@
 ---
-import { getEntry, render } from 'astro:content';
+import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { WaButton } from '../capabilities/lead/index.js';
 import { resolveCanonical } from '../lib/seo';
+import { findEntry } from '../lib/content';
 import {
   buildWebSiteSchema,
   buildOrganizationSchema,
@@ -12,7 +13,7 @@ import {
   buildBreadcrumbSchema,
 } from '../lib/schema';
 
-const pageEntry = await getEntry('pages', 'tentang-kami');
+const pageEntry = await findEntry('pages', 'tentang-kami');
 if (!pageEntry) {
   return Astro.redirect('/404');
 }
@@ -29,7 +30,8 @@ const breadcrumbItems = [
 const graph = [
   buildWebSiteSchema(),
   buildOrganizationSchema(),
-  buildWebPageSchema(canonicalUrl, pageTitle, pageEntry.data.description, {
+  // Schema name matches the visible H1 (entry title), not the richer head title.
+  buildWebPageSchema(canonicalUrl, pageEntry.data.title, pageEntry.data.description, {
     breadcrumbId: `${canonicalUrl}#breadcrumb`,
   }),
   buildBreadcrumbSchema(breadcrumbItems, canonicalUrl),

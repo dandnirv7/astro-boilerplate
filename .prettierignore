@@ -1,34 +1,20 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.*
-.yarn/
 
-# Next.js build & output
-.next/
-out/
+# Astro build output
 dist/
-build/
+.astro/
 
-# Testing & Coverage
-coverage/
-
-# Caches & System
-.turbo/
+# Vercel
 .vercel/
+
+# TypeScript build info
 *.tsbuildinfo
-next-env.d.ts
-.agents/
-.impeccable/
 
 # Package manager locks
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-# Static assets / media
+# Binary/static assets that must not be reformatted
 public/
-
-# Payload auto-generated files
-src/app/(payload)/admin/importMap.js
-src/payload-types.ts

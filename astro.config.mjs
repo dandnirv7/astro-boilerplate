@@ -9,7 +9,13 @@ import icon from 'astro-icon';
 import min from 'astro-min';
 import compressor from 'astro-compressor';
 
-const siteUrl = process.env.SITE_URL || 'https://example.com';
+const siteUrl = (process.env.SITE_URL || '').trim().replace(/\/+$/, '');
+
+if (!siteUrl) {
+  throw new Error(
+    '[config] SITE_URL is required. Copy .env.example to .env and set SITE_URL (e.g. SITE_URL=https://domain-produksi.id).'
+  );
+}
 
 // https://astro.build/config
 export default defineConfig({

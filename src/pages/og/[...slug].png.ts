@@ -2,6 +2,7 @@ import { OGImageRoute } from 'astro-og-canvas';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../../config/site';
 import { ogSlugFromPath } from '../../lib/og';
+import { stripExtension } from '../../lib/content';
 
 interface OgPageData {
   title: string;
@@ -22,7 +23,7 @@ const ogPages: Record<string, OgPageData> = {
 };
 
 for (const article of articles) {
-  const cleanId = article.id.replace(/\.[^/.]+$/, '');
+  const cleanId = stripExtension(article.id);
   ogPages[ogSlugFromPath(`/articles/${cleanId}/`)] = {
     title: article.data.title,
     description: article.data.description,
@@ -30,7 +31,7 @@ for (const article of articles) {
 }
 
 for (const page of pages) {
-  const cleanId = page.id.replace(/\.[^/.]+$/, '');
+  const cleanId = stripExtension(page.id);
   const key = ogSlugFromPath(`/${cleanId}/`);
   if (!ogPages[key]) {
     ogPages[key] = {

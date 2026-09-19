@@ -54,8 +54,11 @@ const formattedTitle = resolveTitle(title);
 const ogTitle = og.title || title || siteConfig.name;
 const ogDescription = og.description || description;
 
-// OG Image resolution (1200x630)
-const ogImageUrl = og.image || image || getOgImageUrl(Astro.url.pathname);
+// OG Image resolution (1200x630).
+// Non-indexable pages (404, drafts, private utilities) fall back to the
+// default OG image instead of requesting a per-page image that is not generated.
+const ogImageUrl =
+  og.image || image || (robots.index === false ? getOgImageUrl() : getOgImageUrl(Astro.url.pathname));
 
 // Robots directives
 const isIndex = robots.index ?? true;
@@ -83,7 +86,6 @@ const robotsDirectives = [
 
 <!-- Primary Meta Tags -->
 <title>{formattedTitle}</title>
-<meta name="title" content={formattedTitle} />
 <meta name="description" content={description} />
 
 <!-- Search Engine Crawler Directives (satu tag, deterministik) -->
@@ -108,13 +110,13 @@ const robotsDirectives = [
 {article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <!-- Twitter -->
-<meta property="twitter:card" content={twitter.card || 'summary_large_image'} />
-<meta property="twitter:url" content={canonicalUrl} />
-<meta property="twitter:title" content={ogTitle} />
-<meta property="twitter:description" content={ogDescription} />
-<meta property="twitter:image" content={ogImageUrl} />
-{twitter.site && <meta property="twitter:site" content={twitter.site} />}
-{twitter.creator && <meta property="twitter:creator" content={twitter.creator} />}
+<meta name="twitter:card" content={twitter.card || 'summary_large_image'} />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={ogTitle} />
+<meta name="twitter:description" content={ogDescription} />
+<meta name="twitter:image" content={ogImageUrl} />
+{twitter.site && <meta name="twitter:site" content={twitter.site} />}
+{twitter.creator && <meta name="twitter:creator" content={twitter.creator} />}
 
 <!-- GEO / Agent Discoverability -->
 <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
