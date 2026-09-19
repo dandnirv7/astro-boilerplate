@@ -1,6 +1,6 @@
 # Boilerplate Astro
 
-Detail arsitektur: `BOILERPLATE-PLAN.md`.
+Detail arsitektur: `BOILERPLATE-SPEC.md` (kontrak), `AGENTS.md` (aturan agen).
 
 ## Pakai untuk project baru (3 sentuhan)
 
@@ -16,9 +16,10 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 | :-------------- | :---------------------------------------------- |
 | `pnpm install`  | Install dependencies                            |
 | `pnpm dev`      | Dev server `localhost:4321`                     |
-| `pnpm build`    | Build produksi ke `./dist/`                     |
-| `pnpm preview`  | Preview hasil build                             |
-| `pnpm diagnost` | Gate SEO/a11y/perf (harus bersih sebelum merge) |
+| `pnpm build`      | Build produksi ke `./dist/`                 |
+| `pnpm preview`    | Preview hasil build                         |
+| `pnpm check`      | Typecheck (`astro check`, 0 errors)         |
+| `pnpm diagnost`   | Gate SEO/a11y/perf (harus bersih sebelum merge) |
 
 ## Yang dihasilkan build
 
@@ -29,3 +30,14 @@ Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/
 
 - View-source `/`, satu halaman, satu artikel: canonical absolut, OG image absolut, tepat 1x JSON-LD `@graph`.
 - Rich Results Test + Schema Validator lolos. `pnpm diagnost` bersih. Satu OG PNG dibuka di browser.
+
+## Dependensi: trade-off yang disengaja
+
+| Keputusan | Alasan |
+|---|---|
+| `canvaskit-wasm` direct (bukan transitif) | Wajib di pnpm strict-layout; tanpanya build OG gagal (`__dirname is not defined`). Dicek Phase 3. |
+| `@expo-google-fonts/inter` di `dependencies` | TTF dibaca saat build OG; devDeps yang di-prune akan merusak build. |
+| Tanpa `@astrojs/partytown` | Nol third-party script; `track()` no-op aman tanpa `dataLayer`. Pasang lagi saat project butuh GA4/Pixel. |
+| Tanpa `astro-icon` | Nol pemakaian ikon; pasang lagi saat dibutuhkan. |
+| `ClientRouter` + `prefetch: true` | Satu-satunya JS runtime (±16KB): transisi halaman + prefetch link. |
+| Tanpa `astro:assets` di konten | Belum ada gambar konten; pipeline Sharp siap saat dibutuhkan. |
