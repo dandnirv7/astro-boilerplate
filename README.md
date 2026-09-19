@@ -1,46 +1,31 @@
-# Astro Starter Kit: Basics
+# Boilerplate Astro
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+Detail arsitektur: `BOILERPLATE-PLAN.md`.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Pakai untuk project baru (3 sentuhan)
 
-## 🚀 Project Structure
+1. `src/config/site.ts` → url, name, description, kontak WA, socials.
+2. Env deploy → `SITE_URL=https://domain-produksi.id` (wajib, kalau tidak sitemap gagal diam-diam).
+3. `src/content/**` → isi `pages/`, `articles/`, `faqs/` (atau tambah collection sendiri + Zod di `src/content.config.ts`).
 
-Inside of your Astro project, you'll see the following folders and files:
+Kalau tambah collection baru: daftarkan di `src/pages/llms.txt.ts` + `src/pages/og/[...slug].png.ts` bila perlu OG per-item.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+## Perintah
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+| Perintah        | Fungsi                                          |
+| :-------------- | :---------------------------------------------- |
+| `pnpm install`  | Install dependencies                            |
+| `pnpm dev`      | Dev server `localhost:4321`                     |
+| `pnpm build`    | Build produksi ke `./dist/`                     |
+| `pnpm preview`  | Preview hasil build                             |
+| `pnpm diagnost` | Gate SEO/a11y/perf (harus bersih sebelum merge) |
 
-## 🧞 Commands
+## Yang dihasilkan build
 
-All commands are run from the root of the project, from a terminal:
+`dist/` berisi `sitemap-index.xml`, `robots.txt` (blok AI training), `llms.txt` (kurasi manual),
+`og/*.png` (1200x630, font Inter OFL). Tidak ada `schemamap.xml` (sengaja dihapus, non-standar).
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Cek sebelum serah terima
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- View-source `/`, satu halaman, satu artikel: canonical absolut, OG image absolut, tepat 1x JSON-LD `@graph`.
+- Rich Results Test + Schema Validator lolos. `pnpm diagnost` bersih. Satu OG PNG dibuka di browser.
