@@ -1,0 +1,43 @@
+import { siteConfig } from '../config/site';
+
+export interface WaLinkOptions {
+  number?: string;
+  text?: string;
+}
+
+/**
+ * Normalize an Indonesian / international phone number to digit-only format.
+ * E.g., '0812-3456-7890' -> '6281234567890'
+ * '+62 812-3456' -> '628123456'
+ */
+export function normalizePhoneNumber(rawNumber: string): string {
+  let cleaned = rawNumber.replace(/[^0-9]/g, '');
+
+  if (cleaned.startsWith('08')) {
+    cleaned = '62' + cleaned.slice(1);
+  } else if (cleaned.startsWith('8') && cleaned.length >= 9) {
+    cleaned = '62' + cleaned;
+  }
+
+  return cleaned;
+}
+
+/**
+ * Builds a direct WhatsApp click-to-chat URL.
+ * Generik tanpa copy/template bisnis.
+ */
+export function buildWaLink(options: WaLinkOptions = {}): string {
+  const targetNumber = options.number || siteConfig.contact.whatsapp || '';
+  const cleanNumber = normalizePhoneNumber(targetNumber);
+
+  if (!cleanNumber) {
+    return '#';
+  }
+
+  if (options.text && options.text.trim()) {
+    const encoded = encodeURIComponent(options.text.trim());
+    return `https://wa.me/${cleanNumber}?text=${encoded}`;
+  }
+
+  return `https://wa.me/${cleanNumber}`;
+}
