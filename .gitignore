@@ -20,5 +20,15 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# Jetbrains IDE
 .idea/
+.cursor/
+
+# Vercel
+.vercel/
+
+# Agents
+.agent/
+.agents/
+.claude/
+.codex/
