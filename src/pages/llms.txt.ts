@@ -4,13 +4,14 @@ import { siteConfig } from '../config/site';
 import { stripExtension } from '../lib/content';
 
 /**
- * Manual curated llms.txt (freelancers edition).
- * Daftar URL dipilih manual agar yang dikutip AI adalah halaman terbaik,
- * bukan semua URL mentah. Tambahkan collection baru di sini bila perlu.
+ * Curated llms.txt derived from published collections.
+ * Only non-draft entries appear; sections stay empty (omitted) when a
+ * collection has no entries. No hardcoded project routes.
  */
 export const GET: APIRoute = async () => {
   const base = siteConfig.url.endsWith('/') ? siteConfig.url.slice(0, -1) : siteConfig.url;
 
+  const pages = (await getCollection('pages')).filter((p) => !p.data.draft);
   const articles = (await getCollection('articles'))
     .filter((a) => !a.data.draft)
     .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
@@ -21,12 +22,16 @@ export const GET: APIRoute = async () => {
     ``,
     `> ${siteConfig.description}`,
     ``,
-    `## Halaman`,
-    ``,
     `- [Beranda](${base}/): ${siteConfig.description}`,
-    `- [Tentang Kami](${base}/tentang-kami/): Profil, visi, dan komitmen profesional.`,
-    `- [Artikel & Wawasan](${base}/articles/): Kumpulan analisis dan panduan.`,
   ];
+
+  if (pages.length > 0) {
+    lines.push(``, `## Halaman`, ``);
+    for (const page of pages) {
+      const cleanId = stripExtension(page.id);
+      lines.push(`- [${page.data.title}](${base}/${cleanId}/): ${page.data.description}`);
+    }
+  }
 
   if (articles.length > 0) {
     lines.push(``, `## Artikel pilihan`, ``);
@@ -36,13 +41,15 @@ export const GET: APIRoute = async () => {
     }
   }
 
-  lines.push(
-    ``,
-    `## Kontak`,
-    ``,
-    siteConfig.contact.whatsapp ? `- WhatsApp: https://wa.me/${siteConfig.contact.whatsapp}` : ``,
+  const contactLines = [
+    siteConfig.contact.whatsapp
+      ? `- WhatsApp: https://wa.me/${siteConfig.contact.whatsapp}`
+      : ``,
     siteConfig.contact.email ? `- Email: ${siteConfig.contact.email}` : ``,
-  );
+  ].filter(Boolean);
+  if (contactLines.length > 0) {
+    lines.push(``, `## Kontak`, ``, ...contactLines);
+  }
 
   const body = lines.join(`\n`).replace(/\n{3,}/g, `\n\n`) + `\n`;
 

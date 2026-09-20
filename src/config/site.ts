@@ -26,6 +26,12 @@ function resolveSiteUrl(): string {
       '[config] SITE_URL is required. Copy .env.example to .env and set SITE_URL (e.g. SITE_URL=https://domain-produksi.id).'
     );
   }
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') throw new Error();
+  } catch {
+    throw new Error(`[config] SITE_URL must be an absolute http(s) URL, got: ${JSON.stringify(raw)}.`);
+  }
   return raw;
 }
 
@@ -45,18 +51,11 @@ export const siteConfig: SiteConfig = {
   name: "Boilerplate Astro",
   tagline: "Boilerplate Generik Marketing & Katalog",
   description:
-    "Boilerplate Astro generik dengan SEO teknis, structured data JSON-LD @graph valid, OG otomatis, dan CTA WhatsApp opsional.",
+    "Boilerplate Astro generik dengan SEO teknis, structured data JSON-LD @graph valid, dan OG otomatis.",
   locale: "id-ID",
   ogDefault: "/og/default.png",
-  contact: {
-    whatsapp: "6281234567890",
-    phone: "+62 812-3456-7890",
-    email: "kontak@example.com",
-  },
-  socials: {
-    instagram: "https://instagram.com/example",
-    facebook: "https://facebook.com/example",
-    twitter: "https://x.com/example",
-    linkedin: "https://linkedin.com/company/example",
-  },
+  // Fill per project. Empty by default: no fictional organization facts
+  // in the generic baseline (see IMPLEMENTATION-PLAN.md Phase 1).
+  contact: {},
+  socials: {},
 };

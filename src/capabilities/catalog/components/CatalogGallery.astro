@@ -20,6 +20,8 @@ const [primary, ...rest] = images;
           <img
             src={primary.src}
             alt={primary.alt || name}
+            width={primary.width}
+            height={primary.height}
             loading="eager"
             fetchpriority="high"
             class="w-full aspect-[4/3] object-cover rounded-2xl border border-slate-200"
@@ -48,6 +50,8 @@ const [primary, ...rest] = images;
                 <img
                   src={img.src}
                   alt={img.alt || name}
+                  width={img.width}
+                  height={img.height}
                   loading="lazy"
                   decoding="async"
                   class="w-full aspect-square object-cover rounded-xl border border-slate-200"

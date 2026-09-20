@@ -6,7 +6,11 @@ export interface WaLinkOptions {
 }
 
 /**
- * Normalize an Indonesian / international phone number to digit-only format.
+ * Normalize a phone number to digit-only international format.
+ * Explicitly Indonesia-scoped: local `08...` / `8...` numbers are rewritten
+ * with the `62` country prefix; other international numbers pass through
+ * digit-stripped and unchanged. Keep this helper inside LEAD — core must
+ * stay locale-agnostic.
  * E.g., '0812-3456-7890' -> '6281234567890'
  * '+62 812-3456' -> '628123456'
  */

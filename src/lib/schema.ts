@@ -45,6 +45,11 @@ export function makeId(base: string, suffix: string): string {
  * Serialize an array of Schema.org Thing objects into a valid JSON-LD @graph string.
  * Drops null/undefined nodes; `undefined` fields inside nodes are omitted
  * by JSON.stringify. Empty strings are preserved as-is.
+ *
+ * Output is escaped for safe inline `<script>` embedding: `<`, `>`, `&`,
+ * U+2028 and U+2029 become `\uXXXX` sequences, which are legal JSON string
+ * escapes. A hostile value such as `</script>` therefore cannot terminate
+ * the script element.
  */
 export function toJsonLd(graph: (Thing | null | undefined)[]): string {
   const activeNodes = graph.filter((node): node is Thing => Boolean(node));
@@ -54,7 +59,12 @@ export function toJsonLd(graph: (Thing | null | undefined)[]): string {
     '@graph': activeNodes,
   };
 
-  return JSON.stringify(jsonLdObj, null, 2);
+  return JSON.stringify(jsonLdObj, null, 2)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
 }
 
 /**
@@ -74,14 +84,23 @@ export function buildWebSiteSchema(siteUrl: string = siteConfig.url, name: strin
 
 /**
  * Standard Organization schema node with deterministic @id: /#org
+ *
+ * Opt-in by configuration: returns null (emits nothing) unless the project
+ * provides at least one real distinguishing fact (email, phone, or social
+ * profile). A name-only node built from placeholder config would be a
+ * fictional organization claim, so the generic baseline stays silent.
+ * Callers pass the result straight into the graph array; nulls are filtered.
  */
 export function buildOrganizationSchema(
   siteUrl: string = siteConfig.url,
   name: string = siteConfig.name,
   socials: Record<string, string | undefined> = siteConfig.socials
-): Organization {
+): Organization | null {
   const url = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
   const sameAs = Object.values(socials).filter((s): s is string => Boolean(s));
+  const hasContact = Boolean(siteConfig.contact.email || siteConfig.contact.phone);
+
+  if (!hasContact && sameAs.length === 0) return null;
 
   return {
     '@type': 'Organization',

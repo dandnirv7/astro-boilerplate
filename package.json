@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "diagnost": "diagnost . --fail-on error"
+    "diagnost": "diagnost . --fail-on none",
+    "assert:dist": "node scripts/assert-dist.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

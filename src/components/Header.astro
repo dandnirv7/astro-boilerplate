@@ -10,13 +10,10 @@ import { siteConfig } from '../config/site';
       <span>{siteConfig.name}</span>
     </a>
 
-    <!-- Nav links -->
+    <!-- Nav links (override via the "nav" slot per project) -->
     <nav aria-label="Navigasi Utama" class="hidden md:flex items-center gap-8">
       <slot name="nav">
         <a href="/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Beranda</a>
-        <a href="/articles/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Artikel & Wawasan</a>
-        <a href="/#faq" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">FAQ</a>
-        <a href="/tentang-kami/" class="text-sm font-medium text-slate-700 hover:text-emerald-600 transition-colors">Tentang Kami</a>
       </slot>
     </nav>
 
@@ -35,10 +32,9 @@ import { siteConfig } from '../config/site';
       </summary>
       <nav aria-label="Navigasi Seluler" class="absolute top-16 inset-x-0 bg-white border-b border-slate-200 shadow-lg">
         <ul class="px-4 sm:px-6 py-4 space-y-1">
-          <li><a href="/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Beranda</a></li>
-          <li><a href="/articles/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Artikel &amp; Wawasan</a></li>
-          <li><a href="/#faq" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">FAQ</a></li>
-          <li><a href="/tentang-kami/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Tentang Kami</a></li>
+          <slot name="nav">
+            <li><a href="/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-600">Beranda</a></li>
+          </slot>
         </ul>
       </nav>
     </details>

@@ -91,9 +91,9 @@ const robotsDirectives = [
 <title>{formattedTitle}</title>
 <meta name="description" content={description} />
 
-<!-- Search Engine Crawler Directives (satu tag, deterministik) -->
+<!-- Search Engine Crawler Directives (single authoritative tag; Googlebot
+     honors the robots meta, so no duplicate googlebot tag is emitted) -->
 <meta name="robots" content={robotsDirectives} />
-<meta name="googlebot" content={robotsDirectives} />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={og.type || 'website'} />

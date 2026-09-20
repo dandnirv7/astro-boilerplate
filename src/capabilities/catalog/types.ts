@@ -5,10 +5,14 @@ import type { ImageMetadata } from 'astro';
  * `src` accepts optimized Astro image metadata (`image()` collection
  * helper or imported asset) or a plain URL/path string.
  * Schema output only uses string URLs; optimized metadata is for rendering.
+ * For string sources, provide `width`/`height` when known so the rendered
+ * `<img>` reserves layout space (no CLS). Unknown stays unknown — never guess.
  */
 export interface CatalogImage {
   src: ImageMetadata | string;
   alt: string;
+  width?: number;
+  height?: number;
 }
 
 /**

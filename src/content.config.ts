@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 const pages = defineCollection({
@@ -19,7 +20,8 @@ const articles = defineCollection({
     description: z.string(),
     publishDate: z.coerce.date(),
     modifiedDate: z.coerce.date().optional(),
-    author: z.string().default('Tim Editorial'),
+    // No default author: projects must attribute real authorship.
+    author: z.string(),
     tags: z.array(z.string()).default([]),
     // Draft articles are never built, listed, or referenced.
     draft: z.boolean().default(false),
@@ -39,35 +41,8 @@ const faqs = defineCollection({
   }),
 });
 
-/**
- * Generic catalog collection (domain-neutral: NOT "products").
- * Only identity is required; every business attribute is optional.
- * `image` uses Astro's image helper so entries resolve to optimized metadata.
- */
-const catalog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/catalog' }),
-  schema: ({ image }) =>
-    z.object({
-      name: z.string(),
-      description: z.string().optional(),
-      category: z.string().optional(),
-      price: z
-        .object({
-          amount: z.number(),
-          currency: z.string().default('IDR'),
-        })
-        .optional(),
-      available: z.boolean().optional(),
-      image: image().optional(),
-      gallery: z.array(image()).default([]),
-      // Draft items are never built, listed, or referenced.
-      draft: z.boolean().default(false),
-    }),
-});
-
 export const collections = {
   pages,
   articles,
   faqs,
-  catalog,
 };

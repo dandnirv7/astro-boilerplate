@@ -9,12 +9,12 @@ interface OgPageData {
   description?: string;
 }
 
-// Fetch all collections
+// Fetch all collections (non-draft only).
 const articles = (await getCollection('articles')).filter((a) => !a.data.draft);
 const pages = (await getCollection('pages')).filter((p) => !p.data.draft);
 
 // Key OG = slug hasil ogSlugFromPath (kontrak yang sama dipakai SeoHead).
-// '/tentang-kami/' -> 'tentang-kami' | '/articles/foo/' -> 'articles-foo'
+// No hardcoded project routes: entries derive from collections.
 const ogPages: Record<string, OgPageData> = {
   default: {
     title: siteConfig.name,
@@ -40,12 +40,6 @@ for (const page of pages) {
     };
   }
 }
-
-// Halaman statis yang tidak dari collection.
-ogPages[ogSlugFromPath('/articles/')] = {
-  title: 'Artikel & Wawasan',
-  description: 'Analisis, panduan terarah, dan wawasan terpercaya.',
-};
 
 export const { getStaticPaths, GET } = await OGImageRoute({
   pages: ogPages,

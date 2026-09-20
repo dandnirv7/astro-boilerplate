@@ -1,5 +1,5 @@
 import type { Product } from 'schema-dts';
-import type { CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { absoluteUrl, makeId } from '../../../lib/schema';
 import { stripExtension } from '../../../lib/content';
 import type { CatalogItem, CatalogPrice } from '../types';
@@ -61,12 +61,30 @@ export function itemUrl(basePath: string, slug: string): string {
 }
 
 /**
- * Convert a `catalog` collection entry into a CatalogItem.
+ * Structural input for entryToCatalogItem. Decoupled from Astro's collection
+ * registry on purpose: any project-defined collection with this shape works,
+ * so the capability never requires a `catalog` collection in core config.
+ */
+export interface CatalogEntryLike {
+  id: string;
+  data: {
+    name: string;
+    description?: string;
+    category?: string;
+    price?: { amount: number; currency: string };
+    available?: boolean;
+    image?: ImageMetadata;
+    gallery?: ImageMetadata[];
+  };
+}
+
+/**
+ * Convert a catalog-shaped collection entry into a CatalogItem.
  * The single place where collection shape meets the generic item model,
  * so pages never repeat frontmatter mapping.
  */
 export function entryToCatalogItem(
-  entry: CollectionEntry<'catalog'>,
+  entry: CatalogEntryLike,
   basePath = '/katalog/'
 ): CatalogItem {
   const slug = stripExtension(entry.id);
